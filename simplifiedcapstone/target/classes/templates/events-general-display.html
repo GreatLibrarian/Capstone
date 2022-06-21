@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Events</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container">
+        <span>
+            <h1> Events </h1>
+            <a th:href="@{/events/showEventForm}" class="btn btn-primary mt-1">Add Event</a>
+            <a th:href="@{/home}" class="btn btn-secondary mt-1 ml-1">Return Home</a>
+        </span>
+        <hr />
+        <table class="table table-bordered table-striped" id="event-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Organizer</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="event: ${events}">
+                    <td th:text="*{event.name}"></td>
+                    <td th:text="*{event.description}"></td>
+                    <td th:text="*{event.location}"></td>
+                    <td th:text="*{event.date}"></td>
+                    <td th:text="*{event.time}"></td>
+                    <td th:text="*{event.user.getFullName}"></td>
+                    <td>
+                        <!-- To do: Add follow/unfollow button -->
+                        <span>
+                            <a th:href="@{/events/deleteEvent}" th:if="${user} == *{event.user}" class="btn btn-danger ml-1">Delete</a>
+                            <button th:action="@{/events/followEvent}" th:object="${user}" method="POST" class="btn btn-info ml-1" th:unless="${user} == *{event.user}">Follow</button>
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Event</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Add User</h2>
+      <hr />
+      <form th:action="@{/events/addEvent}" th:object="${event}" method="POST">
+        <label>Event Name</label>
+        <input
+          type="text"
+          th:field="*{name}"
+          placeholder="Enter Event Name"
+          class="form-control col-4 mb-4"
+          required
+        />
+        <label>Description</label>
+        <input
+          type="text"
+          th:field="*{description}"
+          placeholder="Enter Description"
+          class="form-control col-4 mb-4"
+          required
+        />
+        <label>Event Location</label>
+        <input
+          type="text"
+          th:field="*{location}"
+          placeholder="Enter Event Location"
+          class="form-control col-4 mb-4"
+          required
+        />
+        <label>Event Date</label>
+        <input
+          type="date"
+          th:field="*{date}"
+          placeholder="Enter Event Date"
+          class="form-control col-4 mb-4"
+          required
+        />
+        <label>Event Start Time</label>
+        <input
+          type="time"
+          th:field="*{time}"
+          placeholder="Enter Event Starting Time"
+          class="form-control col-4 mb-4"
+          required
+        />
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <span>
+          <input type="hidden" th:field="*{id}" />
+          <a th:href="@{/events}" class="btn btn-secondary ml-1">Return</a>
+        </span>
+      </form>
+    </div>
+  </body>
+</html>
