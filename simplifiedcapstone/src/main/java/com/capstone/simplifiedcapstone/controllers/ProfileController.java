@@ -91,8 +91,18 @@ public class ProfileController {
 		user.setFirstName(olduser.getFirstName());
 		user.setLastName(olduser.getLastName());
 		user.setPassword(olduser.getPassword());
-		user.setTypes(types);
-		user.setRoles(roles);
+		if(roles != null) {
+			user.setRoles(roles);
+		} else {
+			user.setRoles(olduser.getRoles());
+		}
+		if(types != null ) {
+			user.setTypes(types);
+		} else {
+			user.setTypes(olduser.getTypes());
+		}
+		
+		
 //		user.setRoles(roles);
 		
 		userService.save(user);

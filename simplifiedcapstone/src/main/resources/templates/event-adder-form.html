@@ -26,13 +26,14 @@
           required
         />
         <label>Description</label>
-        <input
-          type="text"
+        <textarea
+          cols="50"
+          rows="10"
           th:field="*{description}"
           placeholder="Enter Description"
           class="form-control col-4 mb-4"
           required
-        />
+        ></textarea>
         <label>Event Location</label>
         <input
           type="text"
@@ -57,6 +58,12 @@
           class="form-control col-4 mb-4"
           required
         />
+        <label>Disability Types</label>
+        <th:block th:each="type : ${types}">
+          <input type="checkbox" name="typers" th:value="${type.id}" />
+          <label for="typers" th:text="${type.typeName}"></label>
+        </th:block>
+        <hr />
         <button type="submit" class="btn btn-primary">Submit</button>
         <span>
           <input type="hidden" th:field="*{id}" />

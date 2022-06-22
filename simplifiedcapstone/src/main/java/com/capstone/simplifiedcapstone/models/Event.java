@@ -1,6 +1,12 @@
 package com.capstone.simplifiedcapstone.models;
 
+import java.util.List;
+
 import javax.persistence.*;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.*;
 
 @Entity
@@ -36,7 +42,12 @@ public class Event {
 	@NonNull
 	private String description;
 	
-	@ManyToOne(targetEntity=User.class, cascade=CascadeType.ALL)
+	@ManyToOne(targetEntity=User.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+//	@OnDelete(action = OnDeleteAction.CASCADE)
 	@JoinTable(name="user_events")
 	private User user;
+	
+	@ManyToMany(targetEntity=Type.class, cascade=CascadeType.ALL)
+	@JoinTable(name="event_types")
+	private List<Type> types;
 }

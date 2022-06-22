@@ -3,6 +3,10 @@ package com.capstone.simplifiedcapstone.models;
 import java.util.List;
 
 import javax.persistence.*;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.*;
 
 @Entity
@@ -34,19 +38,25 @@ public class User {
 	@NonNull
 	private String lastName;
 	
-	@OneToMany(targetEntity=Role.class, cascade=CascadeType.ALL)
+	@ManyToMany(targetEntity=Role.class, cascade=CascadeType.ALL)
 	@JoinTable(name="user_roles")
 	@JoinColumn(name="role_id")
 	private List<Role> roles;
 	
-	@OneToMany(targetEntity=Type.class, cascade=CascadeType.ALL)
+	@ManyToMany(targetEntity=Type.class, cascade=CascadeType.ALL)
 	@JoinTable(name="user_types")
 	private List<Type> types;
 	
-	@OneToMany(targetEntity=Event.class, cascade=CascadeType.ALL)
+	@ManyToMany(targetEntity=Event.class, cascade=CascadeType.ALL)
 	@JoinTable(name="user_followed_events")
-	private List<Event> events;
+	private List<Event> followedEvents;
 	
+//	@OneToMany(targetEntity=Event.class, cascade=CascadeType.ALL)
+//	@OnDelete(action=OnDeleteAction.CASCADE)
+//	@JoinTable(name="user_events")
+//	@JoinColumn(name="event_id")
+//	private List<Event> events;
+//	
 	public void addRoles(List<Role> role) {
 		roles.addAll(role);
 	}
