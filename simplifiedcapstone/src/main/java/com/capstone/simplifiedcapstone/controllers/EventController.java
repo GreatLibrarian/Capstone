@@ -3,8 +3,6 @@ package com.capstone.simplifiedcapstone.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,27 +15,24 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.capstone.simplifiedcapstone.models.Event;
 import com.capstone.simplifiedcapstone.models.Type;
 import com.capstone.simplifiedcapstone.models.User;
-import com.capstone.simplifiedcapstone.repositories.EventRepository;
-import com.capstone.simplifiedcapstone.services.EventServiceIMPL;
-import com.capstone.simplifiedcapstone.services.TypeServiceIMPL;
-import com.capstone.simplifiedcapstone.services.UserServiceIMPL;
+import com.capstone.simplifiedcapstone.services.EventServiceImpl;
+import com.capstone.simplifiedcapstone.services.TypeServiceImpl;
+import com.capstone.simplifiedcapstone.services.UserServiceImpl;
 
 @Controller
 @RequestMapping("/events")
 public class EventController {
 
-//	@Autowired
-//	private EventRepository eventRepo;
+	@Autowired
+	private EventServiceImpl eventService;
 
 	@Autowired
-	private EventServiceIMPL eventService;
-
-	@Autowired
-	private UserServiceIMPL userService;
+	private UserServiceImpl userService;
 	
 	@Autowired
-	private TypeServiceIMPL typeService;
-
+	private TypeServiceImpl typeService;
+	
+//	Shows the events page with our model objects: List of all Events and the logged in User
 	@GetMapping("")
 	public ModelAndView showEvents() {
 		ModelAndView mav = new ModelAndView("events-general-display");
@@ -55,6 +50,7 @@ public class EventController {
 		return mav;
 	}
 
+//	Displays the Add Event Form with Model objects: Empty Event and List of all Types
 	@GetMapping("showEventForm")
 	public ModelAndView showEventForm() {
 		ModelAndView mav = new ModelAndView("event-adder-form");
@@ -67,19 +63,11 @@ public class EventController {
 		return mav;
 	}
 
+//	Saves the new event to DB while also adding the Organizer and Disability Types to the new Event
 	@PostMapping("/addEvent")
 	public String addEvent(@ModelAttribute Event event,
 			@RequestParam(value="typers",required=false) List<Type> types,
 			RedirectAttributes redirectAttributes) {
-//		Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//		String username;
-//		if (principal instanceof UserDetails) {
-//			username = ((UserDetails) principal).getUsername();
-//		} else {
-//			username = principal.toString();
-//		}
-//
-//		User user = userService.findByEmail(username);
 		User user = userService.getLoggedUser();
 		event.setUser(user);
 		if(types != null) {
@@ -92,6 +80,7 @@ public class EventController {
 		return "redirect:/events";
 	}
 
+//	Deletes Event from the DB (currently not working properly due to circular relationships in DB)
 	@GetMapping("/deleteEvent")
 	public String deleteEvent(@RequestParam Long eventId,
 			RedirectAttributes redirectAttributes) {
@@ -105,6 +94,7 @@ public class EventController {
 		return "redirect:/events";
 	}
 
+//	Allows a User to follow an Event when clicking the "Follow" button
 	@GetMapping("/followEvent")
 	public String followEvent(@RequestParam Long eventId,
 			RedirectAttributes redirectAttributes) {
@@ -113,6 +103,8 @@ public class EventController {
 
 		if (user == event.getUser()) {
 			System.out.println("Cannot follow/unfollow your own event");
+			redirectAttributes.addFlashAttribute("successfollow", "Cannot Follow/Unfollow your own event");
+			return "redirect:/events";
 		} else {
 			user.getFollowedEvents().add(event);
 			userService.save(user);
@@ -122,6 +114,7 @@ public class EventController {
 		return "redirect:/events";
 	}
 	
+//	Allows a User to unfollow an Event when clicking the "Unfollow" button
 	@GetMapping("/unfollowEvent")
 	public String unfollowEvent(@RequestParam Long eventId,
 			RedirectAttributes redirectAttributes) {
@@ -130,11 +123,14 @@ public class EventController {
 		
 		if(!user.getFollowedEvents().contains(event)) {
 			System.out.println("Not following this event.");
+			redirectAttributes.addFlashAttribute("successUnfollow", "You are not currently following this event");
 			return "redirect:/events";
 		}
 		
 		if(user == event.getUser()) {
 			System.out.println("Cannot follow/unfollow your own event.");
+			redirectAttributes.addFlashAttribute("successUnfollow", "Cannot Follow/Unfollow your own event");
+			return "redirect:/events";
 		} else {
 			user.getFollowedEvents().remove(event);
 			userService.save(user);
@@ -144,6 +140,7 @@ public class EventController {
 		return "redirect:/events";
 	}
 	
+//	Unused currently: Meant to display a Details Page of a specific event for more features
 	@GetMapping("/profile")
 	public ModelAndView showEventProfile(@RequestParam Long eventId) {
 		ModelAndView mav = new ModelAndView("events-profile-page");

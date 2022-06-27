@@ -13,9 +13,101 @@
     />
   </head>
   <body>
+    <!-- Navbar -->
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="">Navbar</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  th:href="@{/home}"
+                  >Home</a
+                >
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" th:href="@{/profile}">Profile</a>
+              </li>
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Events
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li>
+                    <a class="dropdown-item" th:href="@{/events}">Event List</a>
+                  </li>
+                  <li>
+                    <a class="dropdown-item" th:href="@{/events/showEventForm}"
+                      >Add Event</a
+                    >
+                  </li>
+                </ul>
+              </li>
+              <li class="nav-item">
+                <span>
+                  <a
+                    class="nav-link"
+                    th:if="${user} == null"
+                    th:href="@{/login}"
+                    >Log In</a
+                  >
+                  <a
+                    class="nav-link"
+                    th:unless="${user} == null"
+                    th:href="@{/logout}"
+                    >Log Out</a
+                  >
+                </span>
+              </li>
+              <li class="nav-item">
+                <span>
+                  <a
+                    class="nav-link"
+                    th:href="@{/register}"
+                    th:if="${user} == null"
+                    >Register</a
+                  >
+                  <a
+                    class="nav-link disabled"
+                    th:unless="${user} == null"
+                    href="#"
+                    tabindex="-1"
+                    aria-disabled="true"
+                    >Register</a
+                  >
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!-- Register User Form -->
     <div class="container">
       <h2>Register New User</h2>
       <hr />
+      <!-- The action changes depending on if the user is creating a new user or updating an existing one -->
       <form
         th:action="${user.id} == null ? @{/register/saveUser} : @{/profile/updateUser}"
         th:object="${user}"
@@ -38,13 +130,22 @@
           required
         />
         <label>Email</label>
-        <input
-          type="text"
-          th:field="*{email}"
-          placeholder="Enter Email"
-          class="form-control col-4 mb-4"
-          required
-        />
+        <span>
+          <input
+            type="email"
+            id="email"
+            th:field="*{email}"
+            placeholder="Enter Email"
+            class="form-control col-4 mb-4"
+            required
+          />
+          <p
+            th:if="${emailDuplicate}"
+            style="color: red"
+            th:text="${emailDuplicate}"
+          ></p>
+        </span>
+
         <label th:if="${user.id == null}">Password</label>
         <input
           th:if="${user.id == null}"
@@ -54,7 +155,13 @@
           class="form-control col-4 mb-4"
           required
         />
-        <button class="btn btn-primary" type="Submit">Submit</button>
+        <button
+          class="btn btn-primary"
+          type="Submit"
+          onclick="checkIfEmailInString(document.getElementById(email).value)"
+        >
+          Submit
+        </button>
         <input type="hidden" th:field="*{id}" />
       </form>
       <span>
@@ -72,5 +179,8 @@
         >
       </span>
     </div>
+
+    <script src="./home.js" defer>
+    </script>
   </body>
 </html>

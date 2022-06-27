@@ -4,9 +4,6 @@ import java.util.List;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import lombok.*;
 
 @Entity
@@ -42,12 +39,11 @@ public class Event {
 	@NonNull
 	private String description;
 	
-	@ManyToOne(targetEntity=User.class, cascade=CascadeType.ALL, fetch=FetchType.LAZY)
-//	@OnDelete(action = OnDeleteAction.CASCADE)
+	@ManyToOne(targetEntity=User.class)
 	@JoinTable(name="user_events")
 	private User user;
 	
-	@ManyToMany(targetEntity=Type.class, cascade=CascadeType.ALL)
+	@ManyToMany(targetEntity=Type.class)
 	@JoinTable(name="event_types")
 	private List<Type> types;
 }
